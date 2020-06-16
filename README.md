@@ -41,11 +41,12 @@ npm install [or] yarn
 
 4. My root folder name is `$GOPATH/src/Go-Mini-Social-Network`, if yours is different then go ahead & change it on imports. It can be done easily by searching the whole project.
 
-5. Now run the app 
+5. Now run the app form linux:
 
-```go
-go run main.go
+```bash
+./run.sh
 ```
+
 and open your web browser on 127.0.0.1:3000.
 
 7. Enjoy 💖💖!!
