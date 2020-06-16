@@ -1,4 +1,6 @@
-node_modules/
-tmp/
-vendor/
-.env
+/node_modules/
+/data
+!/data/db.sql
+/tmp/
+/vendor/
+/.env
