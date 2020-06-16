@@ -1,6 +1,6 @@
 {
-  "name": "go-mini-social-network",
-  "version": "1.0.0",
+  "name": "go-mini-social-network-template",
+  "version": "1.0.1",
   "description": "",
   "main": "",
   "scripts": {
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yTakkar/Go-Mini-Social-Network.git"
+    "url": "git+https://github.com/tvitcom/Go-Mini-Social-Network-template.git"
   },
   "author": "yTakkar <www.shtakkar@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yTakkar/Go-Mini-Social-Network/issues"
+    "url": "https://github.com/yTakkar/Go-Mini-Social-Network-template/issues"
   },
-  "homepage": "https://github.com/yTakkar/Go-Mini-Social-Network#readme",
+  "homepage": "https://github.com/tvitcom/Go-Mini-Social-Network-template#readme",
   "dependencies": {
     "handy-notification": "^1.0.26",
     "jquery": "^3.2.1"
