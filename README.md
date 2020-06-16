@@ -1,6 +1,7 @@
 # Go-Mini-Social-Network
 A mini Social-Network created with the awesome Golang💖💖 by [author] (https://github.com/yTakkar).
 Author also has another Versions:
+
 **[React Version](https://github.com/yTakkar/React-Mini-Social-Network)**
 
 **[Vue Version](https://github.com/yTakkar/Vue-Mini-Social-Network)**
