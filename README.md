@@ -29,7 +29,7 @@ I try make if more reliable.
 
 # Usage
 
-1. Open PHPMyAdmin, create a dbuser and db name & import `data/db.sql`.
+1. Open PHPMyAdmin, create a dbuser and db name & import `init.sql`.
 
 2. Install js depencies
 
