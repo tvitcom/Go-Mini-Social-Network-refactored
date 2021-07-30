@@ -1,6 +1,11 @@
 node_modules/
 tmp/
 vendor/
+/public/users
+!/public/users/5
+!/public/users/6
+!/public/users/7
+!/public/users/8
 /data/socnet_*.sql
 !/data/socnet_init.sql
 .env*

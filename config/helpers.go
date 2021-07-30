@@ -4,6 +4,7 @@ import (
 	"os"
 	"io"
 )
+
 // THIS FILE CONTAINS ALL THE METHODS WHICH WILL BE USED IN TEMPLATES/VIEWS
 
 // Get function to get anything of user with ID
@@ -59,24 +60,24 @@ func LikedOrNot(post int, user interface{}) bool {
 // destination file exists, all it's contents will be replaced by the contents
 // of the source file.
 func Copyfile(src, dst string) (err error) {
-    in, err := os.Open(src)
-    if err != nil {
-        return
-    }
-    defer in.Close()
-    out, err := os.Create(dst)
-    if err != nil {
-        return
-    }
-    defer func() {
-        cerr := out.Close()
-        if err == nil {
-            err = cerr
-        }
-    }()
-    if _, err = io.Copy(out, in); err != nil {
-        return
-    }
-    err = out.Sync()
-    return
+	in, err := os.Open(src)
+	if err != nil {
+		return
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer func() {
+		cerr := out.Close()
+		if err == nil {
+			err = cerr
+		}
+	}()
+	if _, err = io.Copy(out, in); err != nil {
+		return
+	}
+	err = out.Sync()
+	return
 }
