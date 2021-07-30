@@ -1,5 +1,7 @@
-/node_modules/
-!/data/db.sql
-/tmp/
-/vendor/
-/.env
+node_modules/
+tmp/
+vendor/
+/data/socnet_*.sql
+!/data/socnet_init.sql
+.env*
+go.mod*
