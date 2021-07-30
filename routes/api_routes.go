@@ -1,7 +1,7 @@
 package routes
 
 import (
-	CO "Go-Mini-Social-Network-template/config"
+	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
 	"os"
 	"strings"
 	"time"

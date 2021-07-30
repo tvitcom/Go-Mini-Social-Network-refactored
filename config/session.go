@@ -2,12 +2,17 @@ package config
 
 import (
 	"os"
-
+	
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 )
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+//declare private secure cookie
+var s *securecookie.SecureCookie
+
 
 // GetSession to return the session
 func GetSession(c *gin.Context) *sessions.Session {

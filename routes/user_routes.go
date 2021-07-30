@@ -1,13 +1,13 @@
 package routes
 
 import (
-	CO "Go-Mini-Social-Network-template/config"
+	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
 	"net/http"
 	"os"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/badoux/checkmail"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -73,9 +73,9 @@ func UserSignup(c *gin.Context) {
 	} else if emailCount > 0 {
 		resp["mssg"] = "Email already exists!!"
 	} else {
-
-		stmt, _ := db.Prepare("INSERT INTO users(username, email, password, joined) VALUES (?, ?, ?, ?)")
-		rs, iErr := stmt.Exec(username, email, hash(password), time.Now())
+		bio := "I am a"
+		stmt, _ := db.Prepare("INSERT INTO users(username, email, password, joined, bio) VALUES (?, ?, ?, ?, ?)")
+		rs, iErr := stmt.Exec(username, email, hash(password), time.Now(), bio)
 		CO.Err(iErr)
 		insertID, _ := rs.LastInsertId()
 		insStr := strconv.FormatInt(insertID, 10)
@@ -92,7 +92,8 @@ func UserSignup(c *gin.Context) {
 		session := CO.GetSession(c)
 		session.Values["id"] = insStr
 		session.Values["username"] = username
-		session.Save(c.Request, c.Writer)
+		sErr := session.Save(c.Request, c.Writer)
+		CO.Err(sErr)
 
 		resp["success"] = true
 		resp["mssg"] = "Hello, " + username + "!!"
@@ -117,8 +118,12 @@ func UserLogin(c *gin.Context) {
 	)
 
 	db.QueryRow("SELECT COUNT(id) AS userCount, id, username, password FROM users WHERE username=?", rusername).Scan(&userCount, &id, &username, &password)
+	fmt.Println("DEBUG:FINDED user:" ,userCount, id, username, password)
 
 	encErr := bcrypt.CompareHashAndPassword([]byte(password), []byte(rpassword))
+	fmt.Println("DEBUG:encErr:" ,encErr)
+	passHashed, _ := bcrypt.GenerateFromPassword([]byte(rpassword), bcrypt.DefaultCost)
+	fmt.Println("DEBUG:bcrypt:" , rpassword, string(passHashed))
 
 	if rusername == "" || rpassword == "" {
 		resp["mssg"] = "Some values are missing!!"
@@ -130,7 +135,12 @@ func UserLogin(c *gin.Context) {
 		session := CO.GetSession(c)
 		session.Values["id"] = strconv.Itoa(id)
 		session.Values["username"] = username
-		session.Save(c.Request, c.Writer)
+		err := session.Save(c.Request, c.Writer)
+		if err != nil {
+			fmt.Println("DEBUG:Session-Err:",err)
+			http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		resp["mssg"] = "Hello, " + username + "!!"
 		resp["success"] = true

@@ -1,7 +1,8 @@
 package routes
 
 import (
-	CO "Go-Mini-Social-Network-template/config"
+	"fmt"
+	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ import (
 func hash(password string) []byte {
 	hash, hashErr := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	CO.Err(hashErr)
+	fmt.Println("DEBUG:hash:", string(hash))
 	return hash
 }
 
@@ -52,6 +54,6 @@ func notLoggedIn(c *gin.Context) {
 
 func invalid(c *gin.Context, what int) {
 	if what == 0 {
-		c.Redirect(http.StatusFound, "/404")
+		c.Redirect(http.StatusNotFound, "/404")
 	}
 }

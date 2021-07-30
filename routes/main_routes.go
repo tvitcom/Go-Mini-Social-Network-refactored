@@ -1,11 +1,10 @@
 package routes
 
 import (
-	CO "Go-Mini-Social-Network-template/config"
+	"github.com/gin-gonic/gin"
+	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
 	"strconv"
 	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Index route

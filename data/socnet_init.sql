@@ -1,8 +1,24 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Jul 30, 2021 at 11:07 AM
+-- Server version: 8.0.26-0ubuntu0.20.04.2
+-- PHP Version: 7.4.3
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
--- Database: `go-mini-social-network`
+-- Database: `socnet`
 --
 
 -- --------------------------------------------------------
@@ -12,11 +28,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `follow` (
-  `followID` int(11) NOT NULL,
-  `followBy` int(11) NOT NULL,
-  `followTo` int(11) NOT NULL,
+  `followID` int NOT NULL,
+  `followBy` int NOT NULL,
+  `followTo` int NOT NULL,
   `followTime` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `follow`
@@ -36,11 +52,11 @@ INSERT INTO `follow` (`followID`, `followBy`, `followTo`, `followTime`) VALUES
 --
 
 CREATE TABLE `likes` (
-  `likeID` int(11) NOT NULL,
-  `postID` int(11) NOT NULL,
-  `likeBy` int(11) NOT NULL,
+  `likeID` int NOT NULL,
+  `postID` int NOT NULL,
+  `likeBy` int NOT NULL,
   `likeTime` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `likes`
@@ -57,12 +73,12 @@ INSERT INTO `likes` (`likeID`, `postID`, `likeBy`, `likeTime`) VALUES
 --
 
 CREATE TABLE `posts` (
-  `postID` int(11) NOT NULL,
+  `postID` int NOT NULL,
   `title` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `createdBy` int(11) NOT NULL,
+  `content` mediumtext NOT NULL,
+  `createdBy` int NOT NULL,
   `createdAt` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `posts`
@@ -73,7 +89,7 @@ INSERT INTO `posts` (`postID`, `title`, `content`, `createdBy`, `createdAt`) VAL
 (5, 'third', 'third content..', 6, '2017-09-23 11:32:45.941602'),
 (9, 'Hello,', 'World!!', 6, '2017-09-24 19:09:37.024131'),
 (10, 'my title..', 'my content...', 5, '2017-09-25 14:20:35.959114'),
-(11, 'ghalib''s first title..', 'and this is content!!!', 7, '2017-09-25 15:38:51.705595'),
+(11, 'ghalib\'s first title..', 'and this is content!!!', 7, '2017-09-25 15:38:51.705595'),
 (12, 'jkj', 'kj', 8, '2017-09-25 15:43:24.782827');
 
 -- --------------------------------------------------------
@@ -83,11 +99,11 @@ INSERT INTO `posts` (`postID`, `title`, `content`, `createdBy`, `createdAt`) VAL
 --
 
 CREATE TABLE `profile_views` (
-  `viewID` int(11) NOT NULL,
-  `viewBy` int(11) NOT NULL,
-  `viewTo` int(11) NOT NULL,
+  `viewID` int NOT NULL,
+  `viewBy` int NOT NULL,
+  `viewTo` int NOT NULL,
   `viewTime` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `profile_views`
@@ -114,13 +130,13 @@ INSERT INTO `profile_views` (`viewID`, `viewBy`, `viewTo`, `viewTime`) VALUES
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `username` varchar(32) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `bio` text NOT NULL,
+  `bio` mediumtext NOT NULL,
   `joined` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
@@ -174,24 +190,33 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `follow`
 --
 ALTER TABLE `follow`
-  MODIFY `followID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `followID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
 --
 -- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `likeID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `likeID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `postID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `postID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
 --
 -- AUTO_INCREMENT for table `profile_views`
 --
 ALTER TABLE `profile_views`
-  MODIFY `viewID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `viewID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
