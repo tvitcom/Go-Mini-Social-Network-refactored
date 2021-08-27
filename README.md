@@ -34,7 +34,8 @@ I try make if more reliable.
 2. Install js depencies
 
 ```bash
-npm install [or] yarn
+npm install
+npm audit fix
 ```
 
 3. Rename the `_env` file to `.env` & edit values for your server
@@ -44,6 +45,15 @@ npm install [or] yarn
 5. Now run the app form linux:
 
 ```bash
+go mod init
+go get github.com/gin-contrib/sessions
+go get github.com/gin-gonic/gin
+go get github.com/joho/godotenv
+go get github.com/urfave/negroni
+go get github.com/go-sql-driver/mysql
+go get github.com/badoux/checkmail
+go get golang.org/x/crypto/bcrypt
+go mod tidy
 ./run.sh
 ```
 

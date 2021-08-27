@@ -9,4 +9,6 @@ vendor/
 /data/socnet_*.sql
 !/data/socnet_init.sql
 .env*
-go.mod*
+.*~
+.*.swp
+
