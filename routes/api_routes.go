@@ -1,7 +1,7 @@
 package routes
 
 import (
-	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
+	"my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"os"
 	"strings"
 	"time"
@@ -16,13 +16,13 @@ func CreateNewPost(c *gin.Context) {
 
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 
-	db := CO.DB()
+	db := config.DB()
 
 	stmt, _ := db.Prepare("INSERT INTO posts(title, content, createdBy, createdAt) VALUES (?, ?, ?, ?)")
 	rs, iErr := stmt.Exec(title, content, id, time.Now())
-	CO.Err(iErr)
+	config.Err(iErr)
 
 	insertID, _ := rs.LastInsertId()
 
@@ -36,10 +36,10 @@ func CreateNewPost(c *gin.Context) {
 // DeletePost route
 func DeletePost(c *gin.Context) {
 	post := c.PostForm("post")
-	db := CO.DB()
+	db := config.DB()
 
 	_, dErr := db.Exec("DELETE FROM posts WHERE postID=?", post)
-	CO.Err(dErr)
+	config.Err(dErr)
 
 	json(c, map[string]interface{}{
 		"mssg": "Post Deleted!!",
@@ -52,7 +52,7 @@ func UpdatePost(c *gin.Context) {
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 
-	db := CO.DB()
+	db := config.DB()
 	db.Exec("UPDATE posts SET title=?, content=? WHERE postID=?", title, content, postID)
 
 	json(c, map[string]interface{}{
@@ -64,13 +64,13 @@ func UpdatePost(c *gin.Context) {
 func UpdateProfile(c *gin.Context) {
 	resp := make(map[string]interface{})
 
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 	username := strings.TrimSpace(c.PostForm("username"))
 	email := strings.TrimSpace(c.PostForm("email"))
 	bio := strings.TrimSpace(c.PostForm("bio"))
 
 	mailErr := checkmail.ValidateFormat(email)
-	db := CO.DB()
+	db := config.DB()
 
 	if username == "" || email == "" {
 		resp["mssg"] = "Some values are missing!!"
@@ -78,7 +78,7 @@ func UpdateProfile(c *gin.Context) {
 		resp["mssg"] = "Invalid email format!!"
 	} else {
 		_, iErr := db.Exec("UPDATE users SET username=?, email=?, bio=? WHERE id=?", username, email, bio, id)
-		CO.Err(iErr)
+		config.Err(iErr)
 
 		session := sessions.Default(c)
 		session.Set("username", username)
@@ -94,13 +94,13 @@ func UpdateProfile(c *gin.Context) {
 // ChangeAvatar route
 func ChangeAvatar(c *gin.Context) {
 	resp := make(map[string]interface{})
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 
 	dir, _ := os.Getwd()
 	dest := dir + "/public/users/" + id.(string) + "/avatar.png"
 
 	dErr := os.Remove(dest)
-	CO.Err(dErr)
+	config.Err(dErr)
 
 	file, _ := c.FormFile("avatar")
 	upErr := c.SaveUploadedFile(file, dest)
@@ -117,14 +117,14 @@ func ChangeAvatar(c *gin.Context) {
 
 // Follow route
 func Follow(c *gin.Context) {
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 	user := c.PostForm("user")
-	username := CO.Get(user, "username")
+	username := config.Get(user, "username")
 
-	db := CO.DB()
+	db := config.DB()
 	stmt, _ := db.Prepare("INSERT INTO follow(followBy, followTo, followTime) VALUES(?, ?, ?)")
 	_, exErr := stmt.Exec(id, user, time.Now())
-	CO.Err(exErr)
+	config.Err(exErr)
 
 	json(c, gin.H{
 		"mssg": "Followed " + username + "!!",
@@ -133,14 +133,14 @@ func Follow(c *gin.Context) {
 
 // Unfollow route
 func Unfollow(c *gin.Context) {
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 	user := c.PostForm("user")
-	username := CO.Get(user, "username")
+	username := config.Get(user, "username")
 
-	db := CO.DB()
+	db := config.DB()
 	stmt, _ := db.Prepare("DELETE FROM follow WHERE followBy=? AND followTo=?")
 	_, dErr := stmt.Exec(id, user)
-	CO.Err(dErr)
+	config.Err(dErr)
 
 	json(c, gin.H{
 		"mssg": "Unfollowed " + username + "!!",
@@ -150,12 +150,12 @@ func Unfollow(c *gin.Context) {
 // Like post route
 func Like(c *gin.Context) {
 	post := c.PostForm("post")
-	db := CO.DB()
-	id, _ := CO.SessionsUserinfo(c)
+	db := config.DB()
+	id, _ := config.SessionsUserinfo(c)
 
 	stmt, _ := db.Prepare("INSERT INTO likes(postID, likeBy, likeTime) VALUES (?, ?, ?)")
 	_, err := stmt.Exec(post, id, time.Now())
-	CO.Err(err)
+	config.Err(err)
 
 	json(c, gin.H{
 		"mssg": "Post Liked!!",
@@ -165,12 +165,12 @@ func Like(c *gin.Context) {
 // Unlike post route
 func Unlike(c *gin.Context) {
 	post := c.PostForm("post")
-	id, _ := CO.SessionsUserinfo(c)
-	db := CO.DB()
+	id, _ := config.SessionsUserinfo(c)
+	db := config.DB()
 
 	stmt, _ := db.Prepare("DELETE FROM likes WHERE postID=? AND likeBy=?")
 	_, err := stmt.Exec(post, id)
-	CO.Err(err)
+	config.Err(err)
 
 	json(c, gin.H{
 		"mssg": "Post Unliked!!",
@@ -180,8 +180,8 @@ func Unlike(c *gin.Context) {
 // DeactivateAcc route post method
 func DeactivateAcc(c *gin.Context) {
 	session := sessions.Default(c)
-	id, _ := CO.SessionsUserinfo(c)
-	db := CO.DB()
+	id, _ := config.SessionsUserinfo(c)
+	db := config.DB()
 	var postID int
 
 	db.Exec("DELETE FROM profile_views WHERE viewBy=?", id)
@@ -203,7 +203,7 @@ func DeactivateAcc(c *gin.Context) {
 	userPath := dir + "/public/users/" + id.(string)
 
 	rmErr := os.RemoveAll(userPath)
-	CO.Err(rmErr)
+	config.Err(rmErr)
 
 	session.Delete("id")
 	session.Delete("username")

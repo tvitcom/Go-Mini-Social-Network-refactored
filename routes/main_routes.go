@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
+	"my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"strconv"
 	"time"
 )
@@ -11,8 +11,8 @@ import (
 func Index(c *gin.Context) {
 	loggedIn(c, "/welcome")
 
-	id, _ := CO.SessionsUserinfo(c)
-	db := CO.DB()
+	id, _ := config.SessionsUserinfo(c)
+	db := config.DB()
 	var (
 		postID    int
 		title     string
@@ -24,7 +24,7 @@ func Index(c *gin.Context) {
 
 	stmt, _ := db.Prepare("SELECT posts.postID, posts.title, posts.content, posts.createdBy, posts.createdAt from posts, follow WHERE follow.followBy=? AND follow.followTo = posts.createdBy ORDER BY posts.postID DESC")
 	rows, qErr := stmt.Query(id)
-	CO.Err(qErr)
+	config.Err(qErr)
 
 	for rows.Next() {
 		rows.Scan(&postID, &title, &content, &createdBy, &createdAt)
@@ -42,7 +42,7 @@ func Index(c *gin.Context) {
 		"title":   "Home",
 		"session": ses(c),
 		"posts":   feeds,
-		"GET":     CO.Get,
+		"GET":     config.Get,
 	})
 }
 
@@ -67,8 +67,8 @@ func Profile(c *gin.Context) {
 	loggedIn(c, "")
 
 	user := c.Param("id")
-	sesID, _ := CO.SessionsUserinfo(c)
-	db := CO.DB()
+	sesID, _ := config.SessionsUserinfo(c)
+	db := config.DB()
 
 	// VARS FOR USER DETAILS
 	var (
@@ -95,7 +95,7 @@ func Profile(c *gin.Context) {
 		pViews     int // for profile views
 	)
 
-	me := CO.MeOrNot(c, user) // Check if its me or not
+	me := config.MeOrNot(c, user) // Check if its me or not
 	var noMssg string         // Mssg to be displayed when user has no posts
 
 	if me == true {
@@ -107,7 +107,7 @@ func Profile(c *gin.Context) {
 		if sesID != nil {
 			stmt, _ := db.Prepare("INSERT INTO profile_views(viewBy, viewTo, viewTime) VALUES(?, ?, ?)")
 			_, pvErr := stmt.Exec(sesID, user, time.Now())
-			CO.Err(pvErr)
+			config.Err(pvErr)
 		}
 
 	}
@@ -118,9 +118,9 @@ func Profile(c *gin.Context) {
 
 	// POSTS
 	stmt, sErr := db.Prepare("SELECT * FROM posts WHERE createdBy=? ORDER BY postID DESC")
-	CO.Err(sErr)
+	config.Err(sErr)
 	rows, gErr := stmt.Query(userID)
-	CO.Err(gErr)
+	config.Err(gErr)
 
 	for rows.Next() {
 		rows.Scan(&postID, &title, &content, &createdBy, &createdAt)
@@ -152,8 +152,8 @@ func Profile(c *gin.Context) {
 		"followings": followings,
 		"views":      pViews,
 		"no_mssg":    noMssg,
-		"GET":        CO.Get,
-		"isF":        CO.IsFollowing,
+		"GET":        config.Get,
+		"isF":        config.IsFollowing,
 	})
 
 }
@@ -161,8 +161,8 @@ func Profile(c *gin.Context) {
 // Explore route
 func Explore(c *gin.Context) {
 	loggedIn(c, "")
-	user, _ := CO.SessionsUserinfo(c)
-	db := CO.DB()
+	user, _ := config.SessionsUserinfo(c)
+	db := config.DB()
 	var (
 		id       int
 		username string
@@ -172,7 +172,7 @@ func Explore(c *gin.Context) {
 
 	stmt, _ := db.Prepare("SELECT id, username, email FROM users WHERE id <> ? ORDER BY RAND() LIMIT 10")
 	rows, err := stmt.Query(user)
-	CO.Err(err)
+	config.Err(err)
 
 	for rows.Next() {
 		rows.Scan(&id, &username, &email)
@@ -188,9 +188,9 @@ func Explore(c *gin.Context) {
 		"title":   "Explore",
 		"session": ses(c),
 		"users":   explore,
-		"GET":     CO.Get,
-		"noF":     CO.NoOfFollowers,
-		"UD":      CO.UsernameDecider,
+		"GET":     config.Get,
+		"noF":     config.NoOfFollowers,
+		"UD":      config.UsernameDecider,
 	})
 }
 
@@ -208,7 +208,7 @@ func ViewPost(c *gin.Context) {
 	loggedIn(c, "")
 
 	param := c.Param("id")
-	db := CO.DB()
+	db := config.DB()
 	var (
 		postCount int
 		postID    int
@@ -237,7 +237,7 @@ func ViewPost(c *gin.Context) {
 			"createdAt": createdAt,
 		},
 		"postCreatedBy": strconv.Itoa(createdBy),
-		"lon":           CO.LikedOrNot,
+		"lon":           config.LikedOrNot,
 		"likes":         likesCount,
 	})
 }
@@ -247,7 +247,7 @@ func EditPost(c *gin.Context) {
 	loggedIn(c, "")
 
 	post := c.Param("id")
-	db := CO.DB()
+	db := config.DB()
 	var (
 		postCount int
 		postID    int
@@ -273,8 +273,8 @@ func EditPost(c *gin.Context) {
 func EditProfile(c *gin.Context) {
 	loggedIn(c, "")
 
-	db := CO.DB()
-	id, _ := CO.SessionsUserinfo(c)
+	db := config.DB()
+	id, _ := config.SessionsUserinfo(c)
 	var (
 		email  string
 		bio    string
@@ -295,16 +295,16 @@ func Followers(c *gin.Context) {
 	loggedIn(c, "")
 
 	user := c.Param("id")
-	username := CO.Get(user, "username")
-	db := CO.DB()
+	username := config.Get(user, "username")
+	db := config.DB()
 	var followBy int
 	followers := []interface{}{}
-	me := CO.MeOrNot(c, user)
+	me := config.MeOrNot(c, user)
 	var noMssg string
 
 	stmt, _ := db.Prepare("SELECT followBy FROM follow WHERE followTo=? ORDER BY followID DESC")
 	rows, fErr := stmt.Query(user)
-	CO.Err(fErr)
+	config.Err(fErr)
 
 	for rows.Next() {
 		rows.Scan(&followBy)
@@ -325,9 +325,9 @@ func Followers(c *gin.Context) {
 		"session":   ses(c),
 		"followers": followers,
 		"no_mssg":   noMssg + " have no followers!!",
-		"GET":       CO.Get,
-		"UD":        CO.UsernameDecider,
-		"noF":       CO.NoOfFollowers,
+		"GET":       config.Get,
+		"UD":        config.UsernameDecider,
+		"noF":       config.NoOfFollowers,
 	})
 }
 
@@ -336,16 +336,16 @@ func Followings(c *gin.Context) {
 	loggedIn(c, "")
 
 	user := c.Param("id")
-	username := CO.Get(user, "username")
-	db := CO.DB()
+	username := config.Get(user, "username")
+	db := config.DB()
 	var followTo int
 	followings := []interface{}{}
-	me := CO.MeOrNot(c, user)
+	me := config.MeOrNot(c, user)
 	var noMssg string
 
 	stmt, _ := db.Prepare("SELECT followTo FROM follow WHERE followBy=? ORDER BY followID DESC")
 	rows, fErr := stmt.Query(user)
-	CO.Err(fErr)
+	config.Err(fErr)
 
 	for rows.Next() {
 		rows.Scan(&followTo)
@@ -366,9 +366,9 @@ func Followings(c *gin.Context) {
 		"session":    ses(c),
 		"followings": followings,
 		"no_mssg":    noMssg + " have no followings!!",
-		"GET":        CO.Get,
-		"UD":         CO.UsernameDecider,
-		"noF":        CO.NoOfFollowers,
+		"GET":        config.Get,
+		"UD":         config.UsernameDecider,
+		"noF":        config.NoOfFollowers,
 	})
 }
 
@@ -377,7 +377,7 @@ func Likes(c *gin.Context) {
 	loggedIn(c, "")
 
 	post := c.Param("id")
-	db := CO.DB()
+	db := config.DB()
 	var postCount int
 	var likeBy int
 	likes := []interface{}{}
@@ -387,7 +387,7 @@ func Likes(c *gin.Context) {
 
 	stmt, _ := db.Prepare("SELECT likeBy FROM likes WHERE postID=?")
 	rows, err := stmt.Query(post)
-	CO.Err(err)
+	config.Err(err)
 
 	for rows.Next() {
 		rows.Scan(&likeBy)
@@ -401,9 +401,9 @@ func Likes(c *gin.Context) {
 		"title":   "Likes",
 		"session": ses(c),
 		"likes":   likes,
-		"GET":     CO.Get,
-		"UD":      CO.UsernameDecider,
-		"noF":     CO.NoOfFollowers,
+		"GET":     config.Get,
+		"UD":      config.UsernameDecider,
+		"noF":     config.NoOfFollowers,
 	})
 }
 

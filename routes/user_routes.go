@@ -1,7 +1,7 @@
 package routes
 
 import (
-	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
+	"my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"net/http"
 	"os"
 	"fmt"
@@ -37,7 +37,7 @@ func Logout(c *gin.Context) {
 	session.Delete("id")
 	session.Delete("username")
 	err := session.Save()
-	CO.Err(err)
+	config.Err(err)
 	c.Redirect(http.StatusFound, "/login")
 }
 
@@ -52,7 +52,7 @@ func UserSignup(c *gin.Context) {
 
 	mailErr := checkmail.ValidateFormat(email)
 
-	db := CO.DB()
+	db := config.DB()
 
 	var (
 		userCount  int
@@ -78,7 +78,7 @@ func UserSignup(c *gin.Context) {
 		bio := "I am a"
 		stmt, _ := db.Prepare("INSERT INTO users(username, email, password, joined, bio) VALUES (?, ?, ?, ?, ?)")
 		rs, iErr := stmt.Exec(username, email, hash(password), time.Now(), bio)
-		CO.Err(iErr)
+		config.Err(iErr)
 		insertID, _ := rs.LastInsertId()
 		insStr := strconv.FormatInt(insertID, 10)
 
@@ -86,16 +86,16 @@ func UserSignup(c *gin.Context) {
 		userPath := dir + "/public/users/" + insStr
 
 		dirErr := os.Mkdir(userPath, 0777)
-		CO.Err(dirErr)
+		config.Err(dirErr)
 
 		linkErr := os.Link(dir+"/public/images/golang.png", userPath+"/avatar.png")
-		CO.Err(linkErr)
+		config.Err(linkErr)
 
 		session := sessions.Default(c)
 		session.Set("id", insStr)
 		session.Set("username", username)
 		sErr := session.Save()
-		CO.Err(sErr)
+		config.Err(sErr)
 
 		resp["success"] = true
 		resp["mssg"] = "Hello, " + username + "!!"
@@ -111,7 +111,7 @@ func UserLogin(c *gin.Context) {
 	rusername := strings.TrimSpace(c.PostForm("username"))
 	rpassword := strings.TrimSpace(c.PostForm("password"))
 
-	db := CO.DB()
+	db := config.DB()
 	var (
 		userCount int
 		id        int

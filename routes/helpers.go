@@ -2,7 +2,7 @@ package routes
 
 import (
 	"fmt"
-	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
+	"my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 
 func hash(password string) []byte {
 	hash, hashErr := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	CO.Err(hashErr)
+	config.Err(hashErr)
 	fmt.Println("DEBUG:hash:", string(hash))
 	return hash
 }
@@ -25,7 +25,7 @@ func json(c *gin.Context, data interface{}) {
 }
 
 func ses(c *gin.Context) interface{} {
-	id, username := CO.SessionsUserinfo(c)
+	id, username := config.SessionsUserinfo(c)
 	return map[string]interface{}{
 		"id":       id,
 		"username": username,
@@ -39,14 +39,14 @@ func loggedIn(c *gin.Context, urlRedirect string) {
 	} else {
 		URL = urlRedirect
 	}
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 	if id == nil {
 		c.Redirect(http.StatusFound, URL)
 	}
 }
 
 func notLoggedIn(c *gin.Context) {
-	id, _ := CO.SessionsUserinfo(c)
+	id, _ := config.SessionsUserinfo(c)
 	if id != nil {
 		c.Redirect(http.StatusFound, "/")
 	}
