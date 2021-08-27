@@ -8,6 +8,7 @@ import (
 
 	"github.com/badoux/checkmail"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
 )
 
 // CreateNewPost route
@@ -15,7 +16,7 @@ func CreateNewPost(c *gin.Context) {
 
 	title := strings.TrimSpace(c.PostForm("title"))
 	content := strings.TrimSpace(c.PostForm("content"))
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 
 	db := CO.DB()
 
@@ -63,7 +64,7 @@ func UpdatePost(c *gin.Context) {
 func UpdateProfile(c *gin.Context) {
 	resp := make(map[string]interface{})
 
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	username := strings.TrimSpace(c.PostForm("username"))
 	email := strings.TrimSpace(c.PostForm("email"))
 	bio := strings.TrimSpace(c.PostForm("bio"))
@@ -79,9 +80,9 @@ func UpdateProfile(c *gin.Context) {
 		_, iErr := db.Exec("UPDATE users SET username=?, email=?, bio=? WHERE id=?", username, email, bio, id)
 		CO.Err(iErr)
 
-		session := CO.GetSession(c)
-		session.Values["username"] = username
-		session.Save(c.Request, c.Writer)
+		session := sessions.Default(c)
+		session.Set("username", username)
+		session.Save()
 
 		resp["mssg"] = "Profile updated!!"
 		resp["success"] = true
@@ -93,7 +94,7 @@ func UpdateProfile(c *gin.Context) {
 // ChangeAvatar route
 func ChangeAvatar(c *gin.Context) {
 	resp := make(map[string]interface{})
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 
 	dir, _ := os.Getwd()
 	dest := dir + "/public/users/" + id.(string) + "/avatar.png"
@@ -116,7 +117,7 @@ func ChangeAvatar(c *gin.Context) {
 
 // Follow route
 func Follow(c *gin.Context) {
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	user := c.PostForm("user")
 	username := CO.Get(user, "username")
 
@@ -132,7 +133,7 @@ func Follow(c *gin.Context) {
 
 // Unfollow route
 func Unfollow(c *gin.Context) {
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	user := c.PostForm("user")
 	username := CO.Get(user, "username")
 
@@ -150,7 +151,7 @@ func Unfollow(c *gin.Context) {
 func Like(c *gin.Context) {
 	post := c.PostForm("post")
 	db := CO.DB()
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 
 	stmt, _ := db.Prepare("INSERT INTO likes(postID, likeBy, likeTime) VALUES (?, ?, ?)")
 	_, err := stmt.Exec(post, id, time.Now())
@@ -164,7 +165,7 @@ func Like(c *gin.Context) {
 // Unlike post route
 func Unlike(c *gin.Context) {
 	post := c.PostForm("post")
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	db := CO.DB()
 
 	stmt, _ := db.Prepare("DELETE FROM likes WHERE postID=? AND likeBy=?")
@@ -178,8 +179,8 @@ func Unlike(c *gin.Context) {
 
 // DeactivateAcc route post method
 func DeactivateAcc(c *gin.Context) {
-	session := CO.GetSession(c)
-	id, _ := CO.AllSessions(c)
+	session := sessions.Default(c)
+	id, _ := CO.SessionsUserinfo(c)
 	db := CO.DB()
 	var postID int
 
@@ -204,9 +205,9 @@ func DeactivateAcc(c *gin.Context) {
 	rmErr := os.RemoveAll(userPath)
 	CO.Err(rmErr)
 
-	delete(session.Values, "id")
-	delete(session.Values, "username")
-	session.Save(c.Request, c.Writer)
+	session.Delete("id")
+	session.Delete("username")
+	session.Save()
 
 	json(c, gin.H{
 		"mssg": "Deactivated your account!!",

@@ -21,7 +21,7 @@ func Err(err interface{}) {
 
 // MeOrNot function to checked whether it's me or not
 func MeOrNot(c *gin.Context, user string) bool {
-	id, _ := AllSessions(c)
+	id, _ := SessionsUserinfo(c)
 	if id != user {
 		return false
 	}

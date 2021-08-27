@@ -11,6 +11,7 @@ import (
 	"github.com/badoux/checkmail"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/gin-contrib/sessions"
 )
 
 // Signup route
@@ -32,10 +33,11 @@ func Login(c *gin.Context) {
 // Logout route
 func Logout(c *gin.Context) {
 	loggedIn(c, "")
-	session := CO.GetSession(c)
-	delete(session.Values, "id")
-	delete(session.Values, "username")
-	session.Save(c.Request, c.Writer)
+	session := sessions.Default(c)
+	session.Delete("id")
+	session.Delete("username")
+	err := session.Save()
+	CO.Err(err)
 	c.Redirect(http.StatusFound, "/login")
 }
 
@@ -83,16 +85,16 @@ func UserSignup(c *gin.Context) {
 		dir, _ := os.Getwd()
 		userPath := dir + "/public/users/" + insStr
 
-		dirErr := os.Mkdir(userPath, 0655)
+		dirErr := os.Mkdir(userPath, 0777)
 		CO.Err(dirErr)
 
 		linkErr := os.Link(dir+"/public/images/golang.png", userPath+"/avatar.png")
 		CO.Err(linkErr)
 
-		session := CO.GetSession(c)
-		session.Values["id"] = insStr
-		session.Values["username"] = username
-		sErr := session.Save(c.Request, c.Writer)
+		session := sessions.Default(c)
+		session.Set("id", insStr)
+		session.Set("username", username)
+		sErr := session.Save()
 		CO.Err(sErr)
 
 		resp["success"] = true
@@ -132,10 +134,10 @@ func UserLogin(c *gin.Context) {
 	} else if encErr != nil {
 		resp["mssg"] = "Invalid password!!"
 	} else {
-		session := CO.GetSession(c)
-		session.Values["id"] = strconv.Itoa(id)
-		session.Values["username"] = username
-		err := session.Save(c.Request, c.Writer)
+		session := sessions.Default(c)
+		session.Set("id", strconv.Itoa(id))
+		session.Set("username", username)
+		err := session.Save()
 		if err != nil {
 			fmt.Println("DEBUG:Session-Err:",err)
 			http.Error(c.Writer, err.Error(), http.StatusInternalServerError)

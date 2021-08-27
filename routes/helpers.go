@@ -25,7 +25,7 @@ func json(c *gin.Context, data interface{}) {
 }
 
 func ses(c *gin.Context) interface{} {
-	id, username := CO.AllSessions(c)
+	id, username := CO.SessionsUserinfo(c)
 	return map[string]interface{}{
 		"id":       id,
 		"username": username,
@@ -39,14 +39,14 @@ func loggedIn(c *gin.Context, urlRedirect string) {
 	} else {
 		URL = urlRedirect
 	}
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	if id == nil {
 		c.Redirect(http.StatusFound, URL)
 	}
 }
 
 func notLoggedIn(c *gin.Context) {
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	if id != nil {
 		c.Redirect(http.StatusFound, "/")
 	}

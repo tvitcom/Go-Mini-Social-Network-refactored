@@ -11,7 +11,7 @@ import (
 func Index(c *gin.Context) {
 	loggedIn(c, "/welcome")
 
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	db := CO.DB()
 	var (
 		postID    int
@@ -67,7 +67,7 @@ func Profile(c *gin.Context) {
 	loggedIn(c, "")
 
 	user := c.Param("id")
-	sesID, _ := CO.AllSessions(c)
+	sesID, _ := CO.SessionsUserinfo(c)
 	db := CO.DB()
 
 	// VARS FOR USER DETAILS
@@ -161,7 +161,7 @@ func Profile(c *gin.Context) {
 // Explore route
 func Explore(c *gin.Context) {
 	loggedIn(c, "")
-	user, _ := CO.AllSessions(c)
+	user, _ := CO.SessionsUserinfo(c)
 	db := CO.DB()
 	var (
 		id       int
@@ -274,7 +274,7 @@ func EditProfile(c *gin.Context) {
 	loggedIn(c, "")
 
 	db := CO.DB()
-	id, _ := CO.AllSessions(c)
+	id, _ := CO.SessionsUserinfo(c)
 	var (
 		email  string
 		bio    string

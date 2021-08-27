@@ -4,6 +4,9 @@ import (
 	R "my.localhost/funny/Go-Mini-Social-Network-template/routes"
 	"os"
 
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/sessions"
+
 	"github.com/joho/godotenv"
 
 	"github.com/gin-gonic/gin"
@@ -16,12 +19,18 @@ func init() {
 
 func main() {
 	router := gin.Default()
+
+	// Session store init
+	sessionStore := cookie.NewStore([]byte("secretu"), []byte("conf.KEY32123412341234123412"))
+	sess := sessions.Sessions("bin", sessionStore)
+	router.Use(sess) //Название ключа в куках
+
 	router.LoadHTMLGlob("views/*.html")
 
-	user := router.Group("/user")
+	auth := router.Group("/user")
 	{
-		user.POST("/signup", R.UserSignup)
-		user.POST("/login", R.UserLogin)
+		auth.POST("/signup", R.UserSignup)
+		auth.POST("/login", R.UserLogin)
 	}
 
 	router.GET("/", R.Index)
