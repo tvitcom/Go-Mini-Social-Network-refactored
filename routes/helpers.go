@@ -2,7 +2,7 @@ package routes
 
 import (
 	"fmt"
-	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
+	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

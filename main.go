@@ -1,7 +1,7 @@
 package main
 
 import (
-	R "my.localhost/funny/Go-Mini-Social-Network-template/routes"
+	R "my.localhost/funny/Go-Mini-Social-Network-refactored/routes"
 	"os"
 
 	"github.com/gin-contrib/sessions/cookie"

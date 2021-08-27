@@ -1,10 +1,10 @@
-module my.localhost/funny/Go-Mini-Social-Network-template
+module my.localhost/funny/Go-Mini-Social-Network-refactored
 
 go 1.15
 
-replace my.localhost/funny/Go-Mini-Social-Network-template/config => ./config
+replace my.localhost/funny/Go-Mini-Social-Network-refactored/config => ./config
 
-replace my.localhost/funny/Go-Mini-Social-Network-template/routes => ./routes
+replace my.localhost/funny/Go-Mini-Social-Network-refactored/routes => ./routes
 
 require (
 	github.com/badoux/checkmail v1.2.1

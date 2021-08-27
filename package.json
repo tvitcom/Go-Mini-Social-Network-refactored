@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tvitcom/Go-Mini-Social-Network-template.git"
+    "url": "git+https://github.com/tvitcom/Go-Mini-Social-Network-refactored.git"
   },
   "author": "yTakkar <www.shtakkar@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yTakkar/Go-Mini-Social-Network-template/issues"
+    "url": "https://github.com/yTakkar/Go-Mini-Social-Network-refactored/issues"
   },
-  "homepage": "https://github.com/tvitcom/Go-Mini-Social-Network-template#readme",
+  "homepage": "https://github.com/tvitcom/Go-Mini-Social-Network-refactored#readme",
   "dependencies": {
     "handy-notification": "^1.0.26",
     "jquery": "^3.6.0"

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	CO "my.localhost/funny/Go-Mini-Social-Network-template/config"
+	CO "my.localhost/funny/Go-Mini-Social-Network-refactored/config"
 	"strconv"
 	"time"
 )
