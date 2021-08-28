@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
 	"github.com/badoux/checkmail"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
@@ -97,10 +96,17 @@ func ChangeAvatar(c *gin.Context) {
 	id, _ := config.SessionsUserinfo(c)
 
 	dir, _ := os.Getwd()
-	dest := dir + "/public/users/" + id.(string) + "/avatar.png"
+	users_dir := dir + "/public/users/" + id.(string)
+	dest := users_dir + "/avatar.png"
 
-	dErr := os.Remove(dest)
-	config.Err(dErr)
+  	// Make user dir if not exist
+  	if _, errPath := os.Stat(users_dir); errPath != nil {
+		config.Err(os.Mkdir(users_dir, 0777))
+  	}
+	if _, err := os.Stat(dest); err == nil {
+		dErr := os.Remove(dest)
+		config.Err(dErr)
+  	}
 
 	file, _ := c.FormFile("avatar")
 	upErr := c.SaveUploadedFile(file, dest)
