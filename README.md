@@ -56,7 +56,6 @@ go get golang.org/x/crypto/bcrypt
 go mod tidy
 ./run.sh
 ```
-
 and open your web browser on 127.0.0.1:3000.
 
 7. Enjoy 💖💖!!

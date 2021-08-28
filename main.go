@@ -21,7 +21,7 @@ func main() {
 	router := gin.Default()
 
 	// Session store init
-	sessionStore := cookie.NewStore([]byte("secretu"), []byte("conf.KEY32123412341234123412"))
+	sessionStore := cookie.NewStore([]byte("secretu"), []byte("conf.KEY32123412341234123412dfrt"))
 	sess := sessions.Sessions("bin", sessionStore)
 	router.Use(sess) //Название ключа в куках
 

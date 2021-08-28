@@ -76,8 +76,10 @@ func UserSignup(c *gin.Context) {
 		resp["mssg"] = "Email already exists!!"
 	} else {
 		bio := "I am a"
+		passhash := hash(password)
+		fmt.Println("Passhash:", passhash)
 		stmt, _ := db.Prepare("INSERT INTO users(username, email, password, joined, bio) VALUES (?, ?, ?, ?, ?)")
-		rs, iErr := stmt.Exec(username, email, hash(password), time.Now(), bio)
+		rs, iErr := stmt.Exec(username, email, passhash, time.Now(), bio)
 		config.Err(iErr)
 		insertID, _ := rs.LastInsertId()
 		insStr := strconv.FormatInt(insertID, 10)
